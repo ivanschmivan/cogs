@@ -1,6 +1,6 @@
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
-const displaySize = { 
+const displaySize = {
     width: window.innerWidth,
     height: window.innerHeight
 };
@@ -19,22 +19,22 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(1, 1, 1).normalize();
 scene.add(directionalLight);
 
-// Shiny metal material with reduced brightness (lower emissive intensity)
+// Shiny metal material
 const shinyMetalMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xC0C0C0, 
+    color: 0xC0C0C0,
     metalness: 1.0,
-    roughness: 0.2, 
+    roughness: 0.2,
     reflectivity: 3.0,
     clearcoat: 1.0,
     clearcoatRoughness: 0.1,
-    emissive: 0xFFFFFF,  // White emissive color
-    emissiveIntensity: 0.7,  // Reduced brightness intensity
+    emissive: 0xFFFFFF,
+    emissiveIntensity: 0.7,
 });
 
 // Load the 3D model
 const loader = new THREE.GLTFLoader();
 let leftEarModel, rightEarModel;
-loader.load('/models/your_model.glb', (gltf) => {
+loader.load('models/your_model.glb', (gltf) => {
     leftEarModel = gltf.scene.clone();
     rightEarModel = gltf.scene.clone();
 
@@ -58,11 +58,11 @@ let helloTextMesh;
 fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
     const textGeometry = new THREE.TextGeometry("Ceci n'est pas un cog", {
         font: font,
-        size: 0.2,  // Smaller text size
+        size: 0.2,
         height: 0.1,
     });
     helloTextMesh = new THREE.Mesh(textGeometry, shinyMetalMaterial);
-    helloTextMesh.position.set(0, 1, -3);  // Position above the head initially
+    helloTextMesh.position.set(0, 1, -3);
     scene.add(helloTextMesh);
 });
 
@@ -75,8 +75,8 @@ navigator.mediaDevices.getUserMedia({ video: {} })
 
 // Load face-api.js models
 async function loadModels() {
-    await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
-    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+    await faceapi.nets.ssdMobilenetv1.loadFromUri('./models');
+    await faceapi.nets.faceLandmark68Net.loadFromUri('./models');
     console.log('Models loaded');
     detectFace();
 }
@@ -93,7 +93,7 @@ async function detectFace() {
 
         const leftEarApprox = landmarks.getLeftEye()[3];
         const rightEarApprox = landmarks.getRightEye()[3];
-        const forehead = landmarks.getNose()[0];  // Using the nose as a proxy for the forehead
+        const forehead = landmarks.getNose()[0];
 
         const normalize = (coord, max) => (coord / max) * 2 - 1;
 
@@ -111,20 +111,16 @@ async function detectFace() {
             y: normalize(forehead.y, displaySize.height),
         };
 
-        // Position 3D models at ears, adjust to move the objects more left and right
         if (leftEarModel && rightEarModel) {
-            // Scale the movement and keep z constant
-            leftEarModel.position.set(normalizedLeftEar.x + 1.2, -normalizedLeftEar.y, -3);  // Fixed z = -3
-            rightEarModel.position.set(normalizedRightEar.x - 1.2, -normalizedRightEar.y, -3);  // Fixed z = -3
+            leftEarModel.position.set(normalizedLeftEar.x + 1.2, -normalizedLeftEar.y, -3);
+            rightEarModel.position.set(normalizedRightEar.x - 1.2, -normalizedRightEar.y, -3);
         }
 
-        // Position "HELLO" text above the head (forehead)
         if (helloTextMesh) {
-            // Scale the movement and keep z constant
             helloTextMesh.position.set(
-                normalizedForehead.x -1, 
-                normalizedForehead.y,  // Adjust position above the head
-                -3  // Fixed z = -3
+                normalizedForehead.x - 1,
+                normalizedForehead.y,
+                -3
             );
         }
     }
