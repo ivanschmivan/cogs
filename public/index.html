@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Cogs</title>
+   <style>
+       body {
+           margin: 0;
+           overflow: hidden;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           height: 100vh;
+       }
+       video, canvas {
+           position: absolute;
+           top: 0;
+           left: 0;
+           width: 100vw;
+           height: 100vh;
+           object-fit: cover;
+       }
+   </style>
+</head>
+<body>
+   <video id="video" autoplay muted></video>
+   <canvas id="canvas"></canvas>
+
+   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+   <script defer src="script.js"></script>
+</body>
+</html>
